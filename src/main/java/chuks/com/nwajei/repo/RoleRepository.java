@@ -1,13 +1,12 @@
 package chuks.com.nwajei.repo;
 
-
-import chuks.com.nwajei.Entity.Picture;
+import chuks.com.nwajei.Entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface PictureRepo extends JpaRepository<Picture, Long> {
-    Optional<Picture> findById(long id);
+public interface RoleRepository extends JpaRepository<Role, Integer> {
+    Optional<Role> findByName(String name);
 }

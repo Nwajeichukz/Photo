@@ -1,45 +1,42 @@
 package chuks.com.nwajei.controller;
 
-import chuks.com.nwajei.model.Picture;
-import chuks.com.nwajei.services.PictureServices;
-import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
+import chuks.com.nwajei.dto.PictureAppResponse;
+import chuks.com.nwajei.dto.PostPictureDto;
+import chuks.com.nwajei.services.picService.PictureService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
+
+import javax.validation.Valid;
+import java.util.Map;
 
 @RestController
+@RequestMapping("/pic")
+@RequiredArgsConstructor
 public class PictureController {
+    private final PictureService pictureService;
 
-    private final PictureServices pictureServices;
-
-    public PictureController(PictureServices pictureServices) {
-        this.pictureServices = pictureServices;
+    @GetMapping
+    public ResponseEntity<PictureAppResponse<Map<String, Object>>> getAll(
+            @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+            @RequestParam(value = "size", required = false, defaultValue = "10") int size
+    ) {
+        return ResponseEntity.ok(pictureService.getAll(PageRequest.of(page, size)));
     }
 
-    @GetMapping("/")
-    public String hello() {
-       return "Hello chukwudi";
+    @GetMapping("/{id}")
+    public ResponseEntity<PictureAppResponse<?>> getByID(@PathVariable long id) {
+        return ResponseEntity.ok(pictureService.getByID(id));
     }
 
-    @GetMapping("/picture")
-    public Iterable<Picture> get() {
-        return pictureServices.get();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<PictureAppResponse<?>> remove(@PathVariable long id){
+        return ResponseEntity.ok(pictureService.remove(id));
     }
 
-    @GetMapping("/picture/{id}")
-    public Picture get(@PathVariable Integer id) {
-        Picture pic = pictureServices.get(id);
-        if (pic == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        return pic;
-    }
-
-    @DeleteMapping("/picture/{id}")
-    public void delete(@PathVariable Integer id){
-       pictureServices.remove(id);
-    }
-
-    @PostMapping("/picture")
-    public Picture create(@RequestBody @Valid Picture picture) {
-        return pictureServices.saved(picture);
+    @PostMapping("/create")
+    public ResponseEntity<PictureAppResponse<?>> saved( @Valid @RequestBody PostPictureDto pic) {
+        return ResponseEntity.ok(pictureService.saved(pic));
     }
 }

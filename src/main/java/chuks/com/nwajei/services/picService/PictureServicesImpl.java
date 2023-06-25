@@ -5,14 +5,13 @@ import chuks.com.nwajei.Exception.ApiException;
 import chuks.com.nwajei.dto.PictureAppResponse;
 import chuks.com.nwajei.dto.PictureDto;
 import chuks.com.nwajei.dto.PostPictureDto;
-import chuks.com.nwajei.enums.ResponseCodeEnum;
 import chuks.com.nwajei.repo.PictureRepo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.Map;
@@ -50,12 +49,12 @@ public class PictureServicesImpl implements PictureService {
 
     public PictureAppResponse<?> remove(long id){
         repo.deleteById(id);
-        return new PictureAppResponse<>(ResponseCodeEnum.SUCCESS.getCode(), ResponseCodeEnum.SUCCESS.getDescription());
+        return new PictureAppResponse<>(0, "SUCCESS");
     }
 
     public PictureAppResponse<?> saved(PostPictureDto pic){
 
-        if (CollectionUtils.isEmpty(Collections.singleton(pic.getFilename())))
+        if (StringUtils.isEmpty(Collections.singleton(pic.getFilename()).toString()))
             throw new ApiException("filename is required");
 
         Picture picture = new Picture();

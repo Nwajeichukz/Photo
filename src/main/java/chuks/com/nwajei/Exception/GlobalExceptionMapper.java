@@ -1,7 +1,6 @@
 package chuks.com.nwajei.Exception;
 
 import chuks.com.nwajei.dto.PictureAppResponse;
-import chuks.com.nwajei.enums.ResponseCodeEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -47,7 +46,7 @@ public class GlobalExceptionMapper extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request){
         List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
         String responseDescription = fieldErrors.stream().map(FieldError::getDefaultMessage).collect(Collectors.joining(", "));
-        PictureAppResponse response = new PictureAppResponse(ResponseCodeEnum.INVALID_INPUT.getCode(), responseDescription);
+        PictureAppResponse response = new PictureAppResponse(-1, responseDescription);
         return new ResponseEntity<>(response, headers, HttpStatus.BAD_REQUEST);
     }
 }
